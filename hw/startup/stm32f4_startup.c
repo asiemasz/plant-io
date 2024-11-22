@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+#include "core_init.h"
 #include "stm32f4_isr_vector.h"
 
 extern uint32_t __stack_start__[];
@@ -10,6 +11,12 @@ extern uint32_t __data_end__[];
 extern uint32_t __bss_start__[];
 extern uint32_t __bss_end__[];
 extern uint32_t __stack_end__[];
+extern void (*__preinit_array_start[])();
+extern void (*__preinit_array_end[])();
+extern void (*__init_array_start[])();
+extern void (*__init_array_end[])();
+extern void (*__fini_array_start[])();
+extern void (*__fini_array_end[])();
 
 extern int main(void);
 
@@ -113,6 +120,22 @@ uint32_t isr_vec[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&HASH_RNG_IRQHandler,
     (uint32_t)&FPU_IRQHandler};
 
+static void static_ctors() {
+  for (void (**p)() = __preinit_array_start; p < __preinit_array_end; ++p)
+    (*p)();
+
+  for (void (**p)() = __init_array_start; p < __init_array_end; ++p)
+    (*p)();
+}
+
+static void static_dtors() {
+  for (void (**p)() = __fini_array_start; p < __fini_array_end; ++p)
+    (*p)();
+
+  for (void (**p)() = __fini_array_start; p < __fini_array_end; ++p)
+    (*p)();
+}
+
 void Reset_Handler() {
   // Copy the .data section from FLASH to SRAM
   uint32_t *pDst = (uint32_t *)__data_start__;
@@ -130,7 +153,12 @@ void Reset_Handler() {
     *pDst++ = (uint32_t)0;
   }
 
+  core_init();
+  static_ctors();
+
   main();
+
+  static_dtors();
 }
 
 void HardFault_Handler() {

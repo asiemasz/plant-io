@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(project-template LANGUAGES C CXX)
+project(plant-io LANGUAGES C CXX)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 17)
@@ -9,6 +9,7 @@ add_compile_options(
   -Wall
   -Wextra
   -Wconversion
+  -Werror
   -Wsign-conversion
   $<$<CONFIG:DEBUG>:-g3>
   $<$<CONFIG:DEBUG>:-Og>

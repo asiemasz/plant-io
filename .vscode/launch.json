@@ -7,7 +7,7 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "./build/target/debug/src/project-template.elf",
+            "executable": "./build/target/debug/src/plant-io.elf",
             "request": "launch",
             "type": "cortex-debug",
             "runToEntryPoint": "main",

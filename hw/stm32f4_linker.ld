@@ -28,20 +28,15 @@ ENTRY(Reset_Handler);
 
 /* Definition of the output sections */
 SECTIONS {
-   /** Interrupt service routines vector **/
-   .isr_vector : {
-      . = ALIGN(4);
-   /* For this section optimalization must be skipped */
-      KEEP(*(.isr_vector))
-      . = ALIGN(4);
-   } > FLASH
-
    /** Program instructions **/
    .text : {
       . = ALIGN(4);
+      /** Interrupt service routines vector **/
+      /* For this section optimalization must be skipped */
+      KEEP(*(.isr_vector))
+      . = ALIGN(4);
       _text = .;
-		*(.text);
-		*(.text*);
+		*(.text .text*);
       *(.glue_7)
       *(.glue_7t)
       *(.eh_frame)
@@ -137,7 +132,8 @@ SECTIONS {
    . = ALIGN(4);
    __heap_start__ = .;
    . = ALIGN(4);
-   __heap_end__ = .;
+   __heap_end__ = __ram_end__;
+   PROVIDE_HIDDEN(end = __heap_end__);
 
    .stab 				0 (NOLOAD) : { *(.stab) }
 	.stabstr 			0 (NOLOAD) : { *(.stabstr) }

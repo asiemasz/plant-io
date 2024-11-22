@@ -1,9 +1,9 @@
 set(NAME ${PROJECT_NAME})
 
-include(utils.cmake)
+include(../utils/utils.cmake)
 
 add_executable(${NAME}
-    main.c
+    main.cpp
 )
 
 target_link_options(${NAME} PRIVATE

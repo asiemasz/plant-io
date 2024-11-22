@@ -12,17 +12,13 @@ set(CMAKE_NM arm-none-eabi-nm)
 set(CMAKE_STRIP arm-none-eabi-strip)
 set(CMAKE_RANLIB arm-none-eabi-ranlib)
 
-set(ARM_OPTIONS -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16)
+set(ARM_FLAGS "-mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16")
 
-add_compile_options(
-  ${ARM_OPTIONS}
-  -fmessage-length=0
-  -funsigned-char
-  -ffunction-sections
-  -fdata-sections
-  -MMD
-  -MP
-)
+set(C_FLAGS "-funsigned-char -ffunction-sections -fdata-sections -MMD -MP")
+set(CXX_FLAGS "-funsigned-char -fno-rtti -fno-exceptions -MMD -MP")
+
+set(CMAKE_C_FLAGS "${ARM_FLAGS} ${C_FLAGS}")
+set(CMAKE_CXX_FLAGS "${ARM_FLAGS} ${CXX_FLAGS}")
 
 add_compile_definitions(
   STM32F40_41xxx
@@ -36,7 +32,8 @@ add_link_options(
   ${ARM_OPTIONS}
   -u_printf_float
   -u_scanf_float
-  -nostartfiles
+  -nostdlib++
+  -specs=nosys.specs
   LINKER:--gc-sections
   LINKER:--build-id
 )
